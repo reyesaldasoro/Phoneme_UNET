@@ -18,14 +18,21 @@ else
     % running in windows
     cd ('D:\Acad\GitHub\Phoneme_UNET\CODE')
     dataSetDir =  'D:\OneDrive - City, University of London\Acad\Research\JoVerhoeven\MOCHA\fsew0_v1.1\';
+
 end
 %% Read the folder for .lab and . wav files
 
 % all files in a folder will be converted
-dir_Phonemes                        = dir(strcat(dataSetDir,'/*.lab'));
-dir_Sounds                        = dir(strcat(dataSetDir,'/*.wav'));
+dir_Phonemes                    = dir(strcat(dataSetDir,'/*.lab'));
+dir_Sounds                      = dir(strcat(dataSetDir,'/*.wav'));
+numFiles                        = size(dir_Phonemes,1);
 
-numFiles                    = size(dir_Phonemes,1);
+%% Reference Phonemes
+% List of phonemes, currently 46
+%{'@';'@@';'a';'aa';'ai';'b';'breath';'ch';'d';'dh';'e';'ei';'eir';'f';'g';'h';'i';'i@';'ii';'iy';'jh';'k';'l';'m';'n';'ng';'o';'oi';'oo';'ou';'ow';'p';'r';'s';'sh';'sil';'t';'th';'u';'uh';'uu';'v';'w';'y';'z';'zh'}
+load('Phonemes.mat')
+
+
 %% To prepare data read per case, train 50% test 50%
 
 
@@ -34,10 +41,10 @@ numFiles                    = size(dir_Phonemes,1);
 sizeSample              = 4096;
 imageSize               = [1 sizeSample*2];
 stepOverlap             = 0;
-h2=plot(ones(sizeSample*1,1));
+%h2=plot(ones(sizeSample*1,1));
 
 
-for counterFile = 1%:numFiles
+for counterFile = 1:15%numFiles
     % iterate over the files selected for training
     %counterFile = 9;
     disp(counterFile)
@@ -66,10 +73,14 @@ for counterFile = 1%:numFiles
                 numRepeats_2        = ceil(sizeSample/lengthSection_2);
                 % If the phonemes are shorter than the sample, repeat, if shorter will be cropped
                 repSection_1        = repmat(currentSection_1',[1 numRepeats_1]);
-                repSection_2        = repmat(currentSection_2',[1 numRepeats_2]);                
+                repSection_2        = repmat(currentSection_2',[1 numRepeats_2]);    
+                
                 % Prepare the labels
-                currentLabel_1      = uint8(ones(1,sizeSample)*counterClass_1);
-                currentLabel_2      = uint8(ones(1,sizeSample)*counterClass_2);
+                Label_1             = find(strcmp(Phonemes3,Phonemes{counterClass_1,3}));
+                Label_2             = find(strcmp(Phonemes3,Phonemes{counterClass_2,3}));
+                
+                currentLabel_1      = uint8(ones(1,sizeSample)*Label_1);
+                currentLabel_2      = uint8(ones(1,sizeSample)*Label_2);
                
                 % Horizontal Pair Arrangement
                 % For the phonemes, it is important the transitions, so crop initial for 1 and final for 2
@@ -78,25 +89,26 @@ for counterFile = 1%:numFiles
                 
                 
                 % Display and Save Horizontal
-                hold off
-                plot(1:sizeSample,currentSectionH(1:sizeSample),'r',...
-                     sizeSample+(1:sizeSample),currentSectionH(sizeSample+(1:sizeSample)))
-                title (strcat(Phonemes{counterClass_1,3},'---',Phonemes{counterClass_2,3}))
+                %hold off
+                %plot(1:sizeSample,currentSectionH(1:sizeSample),'r',...
+                %     sizeSample+(1:sizeSample),currentSectionH(sizeSample+(1:sizeSample)))
+                %title (strcat(Phonemes{counterClass_1,3},'---',Phonemes{counterClass_2,3}))
                 %imagesc(currentSection)
                 %h2.CData = currentSectionH;
                 %title(strcat('H Classes = ',num2str(counterClass_1),'/',num2str(counterClass_2),32,32,'(',num2str(counterR),'-',num2str(counterC),')'))
-                pause(0.1)
+                %pause(0.1)
 %                sound(currentSectionH)
-                drawnow;
+                %drawnow;
                 % Save
-                fName  = strcat('Phoneme1_',Phonemes{counterClass_1,3},'_Phoneme2_',Phonemes{counterClass_2,3},'_Phrase_',num2str(counterFile))
-               % fNameL = strcat('Texture_Randen_Label_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),'R_',num2str(counterR),'C_',num2str(counterC),'.png');
-                %save(currentSectionH,strcat(dataSetDir,'trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
-                %save(currentLabelH,strcat(dataSetDir,'trainingLabels',filesep,'Case_',num2str(currentCase),filesep,fNameL))
+                fName  = strcat('D_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
+                fNameL = strcat('L_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
+                %fNameL  = strcat('Label_Phoneme1_',num2str(counterClass_1),'_',Phonemes{counterClass_1,3},'_Phoneme2_',num2str(counterClass_2),'_',Phonemes{counterClass_2,3},'_Phrase_',num2str(counterFile),'.mat');
+                %save(currentSectionH,strcat('trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
+                %save(currentLabelH  ,strcat('trainingLabels',filesep,'Case_',num2str(currentCase),filesep,fNameL))
+                save(strcat('trainingData',filesep,fName),'currentSectionH')
+                save(strcat('trainingLabels',filesep,fNameL),'currentLabelH' )
                 
-                
-                
-                
+               
             end
         end
     end
