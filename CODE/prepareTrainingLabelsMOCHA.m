@@ -44,7 +44,7 @@ stepOverlap             = 0;
 %h2=plot(ones(sizeSample*1,1));
 
 
-for counterFile = 1:15%numFiles
+for counterFile = 1:5%numFiles
     % iterate over the files selected for training
     %counterFile = 9;
     disp(counterFile)
@@ -101,6 +101,7 @@ for counterFile = 1:15%numFiles
                 %drawnow;
                 % Save
                 fName  = strcat('D_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
+                disp(fName)
                 fNameL = strcat('L_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
                 %fNameL  = strcat('Label_Phoneme1_',num2str(counterClass_1),'_',Phonemes{counterClass_1,3},'_Phoneme2_',num2str(counterClass_2),'_',Phonemes{counterClass_2,3},'_Phrase_',num2str(counterFile),'.mat');
                 %save(currentSectionH,strcat('trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
