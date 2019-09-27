@@ -89,8 +89,8 @@ for counterFile = 1%:numFiles
 %                sound(currentSectionH)
                 drawnow;
                 % Save
-                %fName  = strcat('Texture_Randen_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),      'R_',num2str(counterR),'C_',num2str(counterC),'.png');
-                %fNameL = strcat('Texture_Randen_Label_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),'R_',num2str(counterR),'C_',num2str(counterC),'.png');
+                fName  = strcat('Phoneme1_',Phonemes{counterClass_1,3},'_Phoneme2_',Phonemes{counterClass_2,3},'_Phrase_',num2str(counterFile))
+               % fNameL = strcat('Texture_Randen_Label_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),'R_',num2str(counterR),'C_',num2str(counterC),'.png');
                 %save(currentSectionH,strcat(dataSetDir,'trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
                 %save(currentLabelH,strcat(dataSetDir,'trainingLabels',filesep,'Case_',num2str(currentCase),filesep,fNameL))
                 
