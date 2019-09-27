@@ -34,10 +34,10 @@ numFiles                    = size(dir_Phonemes,1);
 sizeSample              = 4096;
 imageSize               = [1 sizeSample*2];
 stepOverlap             = 0;
+h2=plot(ones(sizeSample*1,1));
 
 
-
-for counterFile = 1:numFiles
+for counterFile = 1%:numFiles
     % iterate over the files selected for training
     %counterFile = 9;
     disp(counterFile)
@@ -58,32 +58,41 @@ for counterFile = 1:numFiles
                 %only if different
                 
                 % Prepare data (phonemes) 
-                currentSection_1    = audioWave(sampleRate*Phonemes{counterClass_1,1}:sampleRate*Phonemes{counterClass_1,2} );
-                currentSection_2    = audioWave(sampleRate*Phonemes{counterClass_2,1}:sampleRate*Phonemes{counterClass_2,2} );
-                
-                % If the phonemes are shorter than the sample, repeat
-                
-                
+                currentSection_1    = audioWave(1+round(sampleRate*Phonemes{counterClass_1,1}):round(sampleRate*Phonemes{counterClass_1,2} ));
+                currentSection_2    = audioWave(1+round(sampleRate*Phonemes{counterClass_2,1}):round(sampleRate*Phonemes{counterClass_2,2} ));
+                lengthSection_1     = numel(currentSection_1);
+                lengthSection_2     = numel(currentSection_2);
+                numRepeats_1        = ceil(sizeSample/lengthSection_1);
+                numRepeats_2        = ceil(sizeSample/lengthSection_2);
+                % If the phonemes are shorter than the sample, repeat, if shorter will be cropped
+                repSection_1        = repmat(currentSection_1',[1 numRepeats_1]);
+                repSection_2        = repmat(currentSection_2',[1 numRepeats_2]);                
                 % Prepare the labels
                 currentLabel_1      = uint8(ones(1,sizeSample)*counterClass_1);
                 currentLabel_2      = uint8(ones(1,sizeSample)*counterClass_2);
                
                 % Horizontal Pair Arrangement
-                currentSectionH      = [currentSection_1(:,1:16) currentSection_2(:,1:16)] ;
+                % For the phonemes, it is important the transitions, so crop initial for 1 and final for 2
+                currentSectionH      = [repSection_1(:,end-sizeSample+1:end) repSection_2(:,1:sizeSample)] ;
                 currentLabelH        = [currentLabel_1 currentLabel_2];
                 
                 
                 % Display and Save Horizontal
+                hold off
+                plot(1:sizeSample,currentSectionH(1:sizeSample),'r',...
+                     sizeSample+(1:sizeSample),currentSectionH(sizeSample+(1:sizeSample)))
+                title (strcat(Phonemes{counterClass_1,3},'---',Phonemes{counterClass_2,3}))
                 %imagesc(currentSection)
-                h2.CData = currentSectionH;
-                title(strcat('H Classes = ',num2str(counterClass_1),'/',num2str(counterClass_2),32,32,'(',num2str(counterR),'-',num2str(counterC),')'))
-                %pause(0.01)
+                %h2.CData = currentSectionH;
+                %title(strcat('H Classes = ',num2str(counterClass_1),'/',num2str(counterClass_2),32,32,'(',num2str(counterR),'-',num2str(counterC),')'))
+                pause(0.1)
+%                sound(currentSectionH)
                 drawnow;
                 % Save
-                fName  = strcat('Texture_Randen_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),      'R_',num2str(counterR),'C_',num2str(counterC),'.png');
-                fNameL = strcat('Texture_Randen_Label_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),'R_',num2str(counterR),'C_',num2str(counterC),'.png');
-                imwrite(currentSectionH,strcat(dataSetDir,'trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
-                imwrite(currentLabelH,strcat(dataSetDir,'trainingLabels',filesep,'Case_',num2str(currentCase),filesep,fNameL))
+                %fName  = strcat('Texture_Randen_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),      'R_',num2str(counterR),'C_',num2str(counterC),'.png');
+                %fNameL = strcat('Texture_Randen_Label_Classes_H_',num2str(counterClass_1),'_',num2str(counterClass_2),'R_',num2str(counterR),'C_',num2str(counterC),'.png');
+                %save(currentSectionH,strcat(dataSetDir,'trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
+                %save(currentLabelH,strcat(dataSetDir,'trainingLabels',filesep,'Case_',num2str(currentCase),filesep,fNameL))
                 
                 
                 
