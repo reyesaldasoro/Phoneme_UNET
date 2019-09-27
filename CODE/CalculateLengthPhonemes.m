@@ -51,7 +51,9 @@ end
 
 %%
 % Results (samples x 1000): 
-% Shortest Phoneme      =  0.48
-% Longest Phoneme       = 20.48
-% Average Length        =  1.4189
-% 95% are shorter than  =  2.9
+% Shortest Phoneme          =  0.48
+% Longest Phoneme           = 20.48
+% Average Length            =  1.4189
+% 95% are shorter than      =  2.9
+% 97.9% are shorter than    =  3.5
+% 98.9% are shorter than    =  4
