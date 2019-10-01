@@ -6,9 +6,10 @@ clc
 %% Read the files that have been stored in the current folder
 if strcmp(filesep,'/')
     % Running in Mac
-    cd ('/Users/ccr22/Acad/GitHub/Phoneme_UNET/CODE')
-    %dataSetDir='/Users/ccr22/Academic/GitHub/Texture-Segmentation/CODE';
- 
+    cd ('/Users/ccr22/Academic/GitHub/Phoneme_UNET/CODE')
+    dataSetDir= '/Users/ccr22/OneDrive - City, University of London/Acad/Research/JoVerhoeven/MOCHA/fsew0_v1.1';
+    trainingSetDir  =  '/Users/ccr22/Academic/GitHub/Phoneme_UNET/CODE';
+    dataSaveDir     = '/Users/ccr22/Academic/GitHub/Phoneme_UNET/Results/'; 
 else
     % running in windows
     dataSetDir      =  'D:\OneDrive - City, University of London\Acad\Research\JoVerhoeven\MOCHA\fsew0_v1.1\';
@@ -22,8 +23,8 @@ end
 %% Read the folder for .lab and . wav files
 
 % all files in a folder will be converted
-dir_Phonemes                    = dir(strcat(dataSetDir,'/*.lab'));
-dir_Sounds                      = dir(strcat(dataSetDir,'/*.wav'));
+dir_Phonemes                    = dir(strcat(dataSetDir,filesep,'*.lab'));
+dir_Sounds                      = dir(strcat(dataSetDir,filesep,'*.wav'));
 numFiles                        = size(dir_Phonemes,1);
 
 %% Reference Phonemes
@@ -35,7 +36,7 @@ numClasses = size(Phonemes3,1);
 
 % The class names are a sequence of options for the textures, e.g.
 clear classNames
-classNames(numClasses)='';
+%classNames(numClasses)='';
 for counterClass=1:numClasses
     classNames(counterClass) = Phonemes3(counterClass);
 end
