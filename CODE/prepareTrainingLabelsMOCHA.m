@@ -100,9 +100,11 @@ for counterFile = 1:5%numFiles
 %                sound(currentSectionH)
                 %drawnow;
                 % Save
-                fName  = strcat('D_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
+                %fName  = strcat('D_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
+                %fNameL = strcat('L_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
+                fName  = strcat('D_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.txt');
+                fNameL = strcat('L_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.txt');
                 disp(fName)
-                fNameL = strcat('L_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.mat');
                 %fNameL  = strcat('Label_Phoneme1_',num2str(counterClass_1),'_',Phonemes{counterClass_1,3},'_Phoneme2_',num2str(counterClass_2),'_',Phonemes{counterClass_2,3},'_Phrase_',num2str(counterFile),'.mat');
                 %save(currentSectionH,strcat('trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
                 %save(currentLabelH  ,strcat('trainingLabels',filesep,'Case_',num2str(currentCase),filesep,fNameL))
