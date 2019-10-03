@@ -43,7 +43,8 @@ imageSize               = [1 sizeSample*2];
 stepOverlap             = 0;
 %h2=plot(ones(sizeSample*1,1));
 
-
+totLabels=[];
+totSections =[];
 for counterFile = 1:5%numFiles
     % iterate over the files selected for training
     %counterFile = 9;
@@ -105,13 +106,19 @@ for counterFile = 1:5%numFiles
                 fName  = strcat('D_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.txt');
                 fNameL = strcat('L_P1_',num2str(Label_1),'_P2_',num2str(Label_2),'_S_',num2str(counterFile),'_Phonemes_',Phonemes{counterClass_1,3},'_',Phonemes{counterClass_2,3},'.txt');
                 disp(fName)
+                
                 %fNameL  = strcat('Label_Phoneme1_',num2str(counterClass_1),'_',Phonemes{counterClass_1,3},'_Phoneme2_',num2str(counterClass_2),'_',Phonemes{counterClass_2,3},'_Phrase_',num2str(counterFile),'.mat');
+                
+                % SAVE as MATLAB
                 %save(currentSectionH,strcat('trainingImages',filesep,'Case_',num2str(currentCase),filesep,fName))
                 %save(currentLabelH  ,strcat('trainingLabels',filesep,'Case_',num2str(currentCase),filesep,fNameL))
-                save(strcat('trainingData',filesep,fName),'currentSectionH')
-                save(strcat('trainingLabels',filesep,fNameL),'currentLabelH' )
-                
-               
+                % SAVE as TXT
+                %save(strcat('trainingData',filesep,fName(1:end-3),'txt'),'currentSectionH','-ascii')
+                %currentLabelH = double(currentLabelH);
+                %save(strcat('trainingLabels',filesep,fNameL(1:end-3),'txt'),'currentLabelH','-ascii' )
+                % SAVE in a matrix
+                totLabels =[totLabels ;currentLabelH];
+                totSections =[totSections; currentSectionH];
             end
         end
     end
@@ -122,18 +129,7 @@ end
 % dataRanden    -  cell with the composite images
 % trainRanden   -  cell with the training data for each image
 % maskRanden    -  cell with the masks for each of the composite images
-
-%% Augmentation of training data for classification with U-Net
-figure(1)
-h2=imagesc(ones(32));
-colormap gray
-
-counterClasses  = 1;
-
-[rr,cc]         = meshgrid(1:32,1:32);
-
-D1              = uint8(cc>rr);
-D2              = uint8(cc<=rr);
+save('trainingDataPhonemes.mat','totLabels','totSections');
 
 %% Prepare training classes to be just two classes per image
 
