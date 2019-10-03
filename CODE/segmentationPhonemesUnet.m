@@ -30,8 +30,15 @@ numFiles                        = size(dir_Phonemes,1);
 %% Reference Phonemes
 % List of phonemes, currently 46
 %{'@';'@@';'a';'aa';'ai';'b';'breath';'ch';'d';'dh';'e';'ei';'eir';'f';'g';'h';'i';'i@';'ii';'iy';'jh';'k';'l';'m';'n';'ng';'o';'oi';'oo';'ou';'ow';'p';'r';'s';'sh';'sil';'t';'th';'u';'uh';'uu';'v';'w';'y';'z';'zh'}
-load('Phonemes.mat')
+%load('Phonemes.mat')
 
+% this contains @ and other symbols that may not be valid
+%Phonemes2 = {'@';'@@';'a';'aa';'ai';'b';'breath';'ch';'d';'dh';'e';'ei';'eir';'f';'g';'h';'i';'i@';'ii';'iy';'jh';'k';'l';'m';'n';'ng';'o';'oi';'oo';'ou';'ow';'p';'r';'s';'sh';'sil';'t';'th';'u';'uh';'uu';'v';'w';'y';'z';'zh'};
+% this replaces  @  with at
+Phonemes3 = {'at';'atat';'a';'aa';'ai';'b';'breath';'ch';'d';'dh';'e';'ei';'eir';'f';'g';'h';'i';'iat';'ii';'iy';'jh';'k';'l';'m';'n';'ng';'o';'oi';'oo';'ou';'ow';'p';'r';'s';'sh';'sil';'t';'th';'u';'uh';'uu';'v';'w';'y';'z';'zh'};
+
+
+%%
 numClasses = size(Phonemes3,1);
 
 % The class names are a sequence of options for the textures, e.g.
@@ -56,24 +63,25 @@ numFilters      = 64;
 filterSize      = [3 1];
 typeEncoder     = 'sgdm';
 numEpochs       = 10;
-
+lgraph = layerGraph;
 layers = [
-    imageInputLayer([sizeSample*2 1 1])
-    convolution2dLayer(filterSize,numFilters,'Padding',1)
-    reluLayer()
-    maxPooling2dLayer(2,'Stride',2)
-    convolution2dLayer(filterSize,numFilters,'Padding',1)
-    reluLayer()
-    maxPooling2dLayer(2,'Stride',2)
-    convolution2dLayer(filterSize,numFilters,'Padding',1)
-    reluLayer()
-    transposedConv2dLayer(4,numFilters,'Stride',2,'Cropping',1);
-    convolution2dLayer(1,numClasses);
-    transposedConv2dLayer(4,numFilters,'Stride',2,'Cropping',1);
-    convolution2dLayer(1,numClasses);
-    softmaxLayer()
-    pixelClassificationLayer()
+    imageInputLayer([sizeSample*2 1 1],'Name','input')
+    convolution2dLayer(filterSize,numFilters,'Padding',1,'Name','conv_1')
+    reluLayer('Name','relu_1')
+    maxPooling2dLayer(2,'Stride',2,'Name','maxP_1')
+    convolution2dLayer(filterSize,numFilters,'Padding',1,'Name','conv_2')
+    reluLayer('Name','relu_2')
+    maxPooling2dLayer(2,'Stride',2,'Name','maxP_2')
+    convolution2dLayer(filterSize,numFilters,'Padding',1,'Name','conv_3')
+    reluLayer('Name','relu_3')
+    transposedConv2dLayer(4,numFilters,'Stride',2,'Cropping',1,'Name','transConv_1');
+    convolution2dLayer(1,numClasses,'Name','conv_4');
+    transposedConv2dLayer(4,numFilters,'Stride',2,'Cropping',1,'Name','transConv_2');
+    convolution2dLayer(1,numClasses,'Name','conv_5');
+    softmaxLayer('Name','softMax_1')
+    pixelClassificationLayer('Name','classLayer_1')
     ];
+lgraph = addLayers(lgraph,layers);
 nameLayers     = '15';
 opts = trainingOptions(typeEncoder, ...
     'InitialLearnRate',1e-3, ...
@@ -87,12 +95,15 @@ opts = trainingOptions(typeEncoder, ...
     
     % These are the data stores with the training pairs and training labels
     % They can be later used to create montages of the pairs.
+    %imds                        = fileDatastore(imageDir,'ReadFcn', @(x)(load(x)));
+    %imds2                       = fileDatastore(labelDir,'ReadFcn', @(x)(load(x)));
     imds                        = fileDatastore(imageDir,'ReadFcn', @(x)(load(x)));
     imds2                       = fileDatastore(labelDir,'ReadFcn', @(x)(load(x)));
 
-    
+    pxds                        = datastore(labelDir,classNames,labelIDs);
     %%
-    net                         = trainNetwork(imds,imds2,layers,opts);
+    load('trainingDataPhonemes.mat')
+    net                         = trainNetwork(totSections,y2,lgraph,opts);
       
     %%
     % The labels are simply the numbers of the textures, same numbers
